@@ -40,6 +40,9 @@ ethers-providers = { version = "2.0", optional = true }
 ethers-core = { version = "2.0", optional = true }
 futures = { version = "0.3.30", optional = true }
 
+# metric
+revm-utils = {path = "../utils", optional = true}
+
 [dev-dependencies]
 ethers-contract = { version = "2.0.13", default-features = false }
 anyhow = "1.0.79"
@@ -102,6 +105,10 @@ optional_beneficiary_reward = ["revm-interpreter/optional_beneficiary_reward"]
 # See comments in `revm-precompile`
 secp256k1 = ["revm-precompile/secp256k1"]
 c-kzg = ["revm-precompile/c-kzg"]
+
+# support perf test
+enable_opcode_metrics = ["revm-interpreter/enable_opcode_metrics", "revm-utils"]
+enable_cache_record = ["revm-utils"]
 
 [[example]]
 name = "fork_ref_transact"

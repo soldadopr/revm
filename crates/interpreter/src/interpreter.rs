@@ -295,7 +295,10 @@ impl Interpreter {
         self.instruction_pointer = unsafe { self.instruction_pointer.offset(1) };
 
         // execute instruction.
-        (instruction_table[opcode as usize])(self, host)
+        (instruction_table[opcode as usize])(self, host);
+
+        #[cfg(feature = "enable_opcode_metrics")]
+        revm_utils::metrics::record_op(opcode);
     }
 
     /// Take memory and replace it with empty memory.
@@ -317,6 +320,8 @@ impl Interpreter {
         self.instruction_result = InstructionResult::Continue;
         self.shared_memory = shared_memory;
         // main loop
+        #[cfg(feature = "enable_opcode_metrics")]
+        revm_utils::metrics::start_record_op();
         while self.instruction_result == InstructionResult::Continue {
             self.step(instruction_table, host);
         }
