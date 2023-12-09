@@ -40,6 +40,7 @@ serde = { version = "1.0", default-features = false, features = [
     "derive",
     "rc",
 ], optional = true }
+revm-utils = {path = "../utils", optional = true}
 
 [build-dependencies]
 hex = { version = "0.4", default-features = false }
@@ -90,3 +91,4 @@ optional_beneficiary_reward = []
 
 # See comments in `revm-precompile`
 c-kzg = ["dep:c-kzg", "dep:once_cell", "dep:derive_more"]
+enable_cache_record = ["revm-utils"]

@@ -31,8 +31,11 @@ pub use env::*;
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "std")] {
+        #[cfg(not(feature = "enable_cache_record"))]
         pub use std::collections::{hash_map, hash_set, HashMap, HashSet};
         use hashbrown as _;
+        #[cfg(feature = "enable_cache_record")]
+        pub use hashbrown::{hash_map, hash_set, HashMap, HashSet};
     } else {
         pub use hashbrown::{hash_map, hash_set, HashMap, HashSet};
     }
