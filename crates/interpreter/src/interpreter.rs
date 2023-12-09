@@ -119,7 +119,10 @@ impl<'a> Interpreter<'a> {
         self.instruction_pointer = unsafe { self.instruction_pointer.offset(1) };
 
         // execute instruction.
-        (instruction_table[opcode as usize])(self, host)
+        (instruction_table[opcode as usize])(self, host);
+
+        #[cfg(feature = "enable_opcode_metrics")]
+        revm_utils::metrics::record_op(opcode);
     }
 
     /// Executes the interpreter until it returns or stops.
@@ -131,6 +134,8 @@ impl<'a> Interpreter<'a> {
     where
         FN: Fn(&mut Interpreter<'_>, &mut H),
     {
+        #[cfg(feature = "enable_opcode_metrics")]
+        revm_utils::metrics::start_record_op();
         while self.instruction_result == InstructionResult::Continue {
             self.step(instruction_table, host);
         }

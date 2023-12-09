@@ -55,3 +55,6 @@ pub use inspector::{inspector_instruction, Inspector};
 pub use optimism::{L1BlockInfo, BASE_FEE_RECIPIENT, L1_BLOCK_CONTRACT, L1_FEE_RECIPIENT};
 
 pub use handler::Handler;
+
+#[cfg(feature = "enable_opcode_metrics")]
+pub use revm_interpreter::opcode::{self, OpCode};
