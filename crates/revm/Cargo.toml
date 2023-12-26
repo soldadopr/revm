@@ -110,6 +110,7 @@ c-kzg = ["revm-precompile/c-kzg"]
 # support perf test
 enable_opcode_metrics = ["revm-interpreter/enable_opcode_metrics"]
 enable_cache_record = ["revm-utils", "hashbrown", "revm-interpreter/enable_cache_record"]
+enable_transact_measure = ["revm-utils"]
 
 [[example]]
 name = "fork_ref_transact"
