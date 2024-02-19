@@ -378,7 +378,6 @@ pub fn call<H: Host, SPEC: Spec>(interpreter: &mut Interpreter, host: &mut H) {
     #[cfg(feature = "enable_opcode_metrics")]
     revm_utils::metrics::record_gas(crate::opcode::CALL, gas_limit);
 
-
     // add call stipend if there is value to be transferred.
     if value != U256::ZERO {
         gas_limit = gas_limit.saturating_add(gas::CALL_STIPEND);
@@ -435,7 +434,6 @@ pub fn call_code<H: Host, SPEC: Spec>(interpreter: &mut Interpreter, host: &mut 
     gas!(interpreter, gas_limit);
     #[cfg(feature = "enable_opcode_metrics")]
     revm_utils::metrics::record_gas(crate::opcode::CALLCODE, gas_limit);
-
 
     // add call stipend if there is value to be transferred.
     if value != U256::ZERO {

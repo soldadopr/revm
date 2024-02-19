@@ -94,10 +94,14 @@ impl BundleAccount {
                 self.info = None;
                 if self.original_info.is_none() {
                     #[cfg(not(feature = "enable_cache_record"))]
-                    self.storage = HashMap::new();
+                    {
+                        self.storage = HashMap::new();
+                    }
 
                     #[cfg(feature = "enable_cache_record")]
-                    self.storage = HashMap::new_in(revm_utils::TrackingAllocator);
+                    {
+                        self.storage = HashMap::new_in(revm_utils::TrackingAllocator);
+                    }
 
                     return true;
                 } else {

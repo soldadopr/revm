@@ -2335,11 +2335,8 @@ dependencies = [
  "ethers-core",
  "ethers-providers",
  "futures",
-<<<<<<< HEAD
+ "hashbrown",
  "indicatif",
-=======
- "hashbrown 0.14.2",
->>>>>>> fe5b39d... Perf: Add a method to obtain state size (#20)
  "revm-interpreter",
  "revm-precompile",
  "revm-utils",
