@@ -370,6 +370,7 @@ pub fn call<H: Host, SPEC: Spec>(interpreter: &mut Interpreter, host: &mut H) {
         local_gas_limit,
         true,
         true,
+        crate::opcode::CALL,
     ) else {
         return;
     };
@@ -427,6 +428,7 @@ pub fn call_code<H: Host, SPEC: Spec>(interpreter: &mut Interpreter, host: &mut 
         local_gas_limit,
         true,
         false,
+        crate::opcode::CALLCODE,
     ) else {
         return;
     };
@@ -476,9 +478,16 @@ pub fn delegate_call<H: Host, SPEC: Spec>(interpreter: &mut Interpreter, host: &
         return;
     };
 
-    let Some(gas_limit) =
-        calc_call_gas::<H, SPEC>(interpreter, host, to, false, local_gas_limit, false, false)
-    else {
+    let Some(gas_limit) = calc_call_gas::<H, SPEC>(
+        interpreter,
+        host,
+        to,
+        false,
+        local_gas_limit,
+        false,
+        false,
+        crate::opcode::DELEGATECALL,
+    ) else {
         return;
     };
 
@@ -525,9 +534,16 @@ pub fn static_call<H: Host, SPEC: Spec>(interpreter: &mut Interpreter, host: &mu
         return;
     };
 
-    let Some(gas_limit) =
-        calc_call_gas::<H, SPEC>(interpreter, host, to, false, local_gas_limit, false, true)
-    else {
+    let Some(gas_limit) = calc_call_gas::<H, SPEC>(
+        interpreter,
+        host,
+        to,
+        false,
+        local_gas_limit,
+        false,
+        true,
+        crate::opcode::STATICCALL,
+    ) else {
         return;
     };
     gas!(interpreter, gas_limit);
