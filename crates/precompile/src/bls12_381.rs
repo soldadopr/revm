@@ -31,7 +31,7 @@ pub fn precompiles() -> impl Iterator<Item = PrecompileWithAddress> {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::g1_add;
     use super::g1_msm;
     use super::g1_mul;
@@ -90,52 +90,54 @@ mod test {
         #[case] precompile: fn(input: &Bytes, gas_limit: u64) -> PrecompileResult,
         #[case] file_name: &str,
     ) {
-        let test_vectors = load_test_vectors(format!("test-vectors/{file_name}"))
-            .unwrap_or_else(|e| panic!("Failed to load test vectors from {file_name}: {e}"));
+        let test_vectors = load_test_vectors(format!("test-vectors/{}", file_name))
+            .unwrap_or_else(|e| panic!("Failed to load test vectors from {}: {}", file_name, e));
 
         for vector in test_vectors.0 {
-            let test_name = format!("{file_name}/{}", vector.name);
+            let test_name = format!("{}/{}", file_name, vector.name);
             let input = Bytes::from_hex(vector.input.clone()).unwrap_or_else(|e| {
                 panic!(
-                    "could not deserialize input {} as hex in {test_name}: {e}",
-                    &vector.input
+                    "could not deserialize input {} as hex in {}: {}",
+                    &vector.input, test_name, e
                 )
             });
             let target_gas: u64 = 30_000_000;
             let res = precompile(&input, target_gas);
             if let Some(expected_error) = vector.expected_error {
-                assert!(res.is_err(), "expected error {expected_error} didn't happen in {test_name}, got result {res:?}");
+                assert!(res.is_err(), "expected error {} didn't happen in {}, got result {:?}", expected_error, test_name, res);
             } else {
                 let Some(gas) = vector.gas else {
-                    panic!("gas is missing in {test_name}");
+                    panic!("gas is missing in {}", test_name);
                 };
                 let (actual_gas, actual_output) =
-                    res.unwrap_or_else(|e| panic!("precompile call failed for {test_name}: {e}"));
+                    res.unwrap_or_else(|e| panic!("precompile call failed for {}: {}", test_name, e));
                 assert_eq!(
                     gas, actual_gas,
-                    "expected gas: {}, actual gas: {} in {test_name}",
-                    gas, actual_gas
+                    "expected gas: {}, actual gas: {} in {}",
+                    gas, actual_gas, test_name
                 );
                 let Some(expected) = vector.expected else {
-                    panic!("expected output is missing in {test_name}");
+                    panic!("expected output is missing in {}", test_name);
                 };
                 let expected_output = Bytes::from_hex(expected).unwrap();
                 assert_eq!(
                     expected_output, actual_output,
-                    "expected output: {expected_output}, actual output: {actual_output} in {test_name}");
+                    "expected output: {:?}, actual output: {:?} in {}",
+                    expected_output, actual_output, test_name
+                );
             }
         }
     }
 
     #[rstest]
     #[case::g1_empty(0, g1_mul::BASE_GAS_FEE, 0)]
-    #[case::g1_one_item(160, g1_mul::BASE_GAS_FEE, 14400)]
-    #[case::g1_two_items(320, g1_mul::BASE_GAS_FEE, 21312)]
-    #[case::g1_ten_items(1600, g1_mul::BASE_GAS_FEE, 50760)]
-    #[case::g1_sixty_four_items(10240, g1_mul::BASE_GAS_FEE, 170496)]
-    #[case::g1_one_hundred_twenty_eight_items(20480, g1_mul::BASE_GAS_FEE, 267264)]
-    #[case::g1_one_hundred_twenty_nine_items(20640, g1_mul::BASE_GAS_FEE, 269352)]
-    #[case::g1_two_hundred_fifty_six_items(40960, g1_mul::BASE_GAS_FEE, 534528)]
+    #[case::g1_one_item(160, g1_mul::BASE_GAS_FEE, 14_400)]
+    #[case::g1_two_items(320, g1_mul::BASE_GAS_FEE, 21_312)]
+    #[case::g1_ten_items(1_600, g1_mul::BASE_GAS_FEE, 50_760)]
+    #[case::g1_sixty_four_items(10_240, g1_mul::BASE_GAS_FEE, 170_496)]
+    #[case::g1_one_hundred_twenty_eight_items(20_480, g1_mul::BASE_GAS_FEE, 267_264)]
+    #[case::g1_one_hundred_twenty_nine_items(20_640, g1_mul::BASE_GAS_FEE, 269_352)]
+    #[case::g1_two_hundred_fifty_six_items(40_960, g1_mul::BASE_GAS_FEE, 534_528)]
     fn test_g1_msm_required_gas(
         #[case] input_len: usize,
         #[case] multiplication_cost: u64,
